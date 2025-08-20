@@ -1,0 +1,65 @@
+services:
+  mariadb:
+    build: ./requirements/mariadb/
+    image: mariadb
+    pull_policy: never
+    container_name: mariadb
+    env_file:
+      - .env
+    secrets:
+      - db_password
+      - db_root_password
+    volumes:
+      - db_data:${DB_DATADIR}
+    networks:
+      - wp_app
+    healthcheck:
+        test: ["CMD", "mariadb-admin", "ping", "-uroot", "--password=$(cat /run/secrets/db_root_password)"]
+        interval: 10s
+        retries: 5
+        start_period: 30s
+    expose:
+      - 3306
+
+  wordpress:
+    build: ./requirements/wordpress/
+    image: wordpress
+    pull_policy: never
+    container_name: wordpress
+    env_file:
+      - .env
+    secrets:
+      - db_password
+    networks:
+      - wp_app
+    expose:
+      - 3306
+
+  nginx:
+    build: ./requirements/nginx/
+    image: nginx
+    pull_policy: never
+    container_name: nginx
+    networks:
+      - wp_app
+    ports:
+      - 8080:80
+
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${DB_VOLUME_PATH}
+
+networks:
+  wp_app:
+    driver: bridge
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt
+  db_root_password:
+    file: ./secrets/db_root_password.txt
+
