@@ -4,6 +4,7 @@ services:
     image: mariadb
     pull_policy: never
     container_name: mariadb
+    restart: always
     env_file:
       - .env
     secrets:
@@ -15,7 +16,7 @@ services:
       - wp_app
     healthcheck:
         test: ["CMD", "mariadb-admin", "ping", "-uroot", "--password=$(cat /run/secrets/db_root_password)"]
-        interval: 10s
+        interval: 4s
         retries: 5
         start_period: 30s
     expose:
@@ -25,25 +26,38 @@ services:
     build: ./requirements/wordpress/
     image: wordpress
     pull_policy: never
+    depends_on:
+      mariadb:
+        condition: service_healthy
     container_name: wordpress
+    restart: always
+    volumes:
+      - wp_data:/var/www/html/:rw
     env_file:
       - .env
     secrets:
       - db_password
+      - wp_admin_password
     networks:
       - wp_app
     expose:
-      - 3306
+      - 9000
 
   nginx:
     build: ./requirements/nginx/
     image: nginx
     pull_policy: never
+    restart: always
+    volumes:
+      - wp_data:/var/www/html/:ro
+    depends_on:
+      wordpress:
+        condition: service_started
     container_name: nginx
     networks:
       - wp_app
     ports:
-      - 8080:80
+      - 80:80
 
 volumes:
   db_data:
@@ -52,6 +66,12 @@ volumes:
       type: none
       o: bind
       device: ${DB_VOLUME_PATH}
+  wp_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${WP_VOLUME_PATH}
 
 networks:
   wp_app:
@@ -60,6 +80,8 @@ networks:
 secrets:
   db_password:
     file: ./secrets/db_password.txt
+  wp_admin_password:
+    file: ./secrets/wp_admin_password.txt
   db_root_password:
     file: ./secrets/db_root_password.txt
 
