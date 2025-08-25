@@ -28,6 +28,11 @@ EOF
 
 	echo "END INIT"
 }
+	
+if [[ ! -v DB_DATADIR ]]; then
+	echo "Database directory not set"
+	exit 1
+fi
 
 mkdir -p "$DB_DATADIR"
 if [ ! -d "$DB_DATADIR/mysql" ]; then

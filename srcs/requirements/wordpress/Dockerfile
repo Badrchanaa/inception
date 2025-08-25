@@ -26,11 +26,11 @@ WORKDIR wordpress
 ADD https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar ./wp-cli.phar
 RUN chmod +x wp-cli.phar
 RUN mv wp-cli.phar /usr/local/bin/wp
-COPY ./tools/install.sh .
-COPY config/www.conf .
-COPY config/php.ini .
+COPY ./tools/setup.sh .
+COPY conf/www.conf .
+COPY conf/php.ini .
 RUN mv php.ini /etc/php84/
 RUN mv  www.conf /etc/php84/php-fpm.d/
-RUN chmod +x install.sh
+RUN chmod +x setup.sh
 
-CMD ["/bin/sh", "install.sh"]
+CMD ["/bin/sh", "setup.sh"]
