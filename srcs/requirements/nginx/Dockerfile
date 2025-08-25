@@ -6,13 +6,12 @@ RUN apk add --no-cache nginx openssl
 RUN addgroup -g 1001 www && adduser -D -s /sbin/nologin -H -u 1001 -G www www
 RUN mkdir -p ${WP_DATA}
 RUN mkdir /www
-# RUN chown -R www:www /var/lib/nginx
 RUN chown -R www:www ${WP_DATA}
 RUN chown -R www:www /www
 
-COPY ./tools/install.sh .
-COPY ./config/nginx.conf /etc/nginx/nginx.conf
-RUN chmod +x install.sh
-RUN ./install.sh
+COPY ./tools/setup.sh .
+COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+RUN chmod +x setup.sh
+RUN ./setup.sh
 
 CMD ["nginx", "-g", "daemon off;"]
