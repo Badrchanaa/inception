@@ -2,42 +2,22 @@
 
 set -e
 
-if [ ! -d "/run/mysqld" ]; then
-	mkdir -p /run/mysqld
-	chown -R mysql:mysql /run/mysqld
-fi
+mkdir -p /var/run/mysqld
 
-DB_PASSWORD=$(cat /run/secrets/db_password)
-DB_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
+echo "before INSTALL TIME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+mysql_install_db --user=mysql --datadir=${DB_DATADIR}
+echo "before DAEMON TIME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+mysqld --user=mysql --skip-networking=0 --bind-address=0.0.0.0 --port=3306 --datadir=${DB_DATADIR} &
 
-init_database()
-{
-	rm -rf $DB_DATADIR/*
-	echo "initializing db, datadir=" $DB_DATADIR
-	chown -R mysql:mysql "$DB_DATADIR"
-	mariadb-install-db --user=mysql --datadir="$DB_DATADIR"
-	mariadbd --user=mysql --datadir="$DB_DATADIR" --bootstrap << EOF
 
-FLUSH PRIVILEGES;
-ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}';
-CREATE DATABASE ${WORDPRESS_DB};
-CREATE USER '${WP_DB_USER}'@'%' IDENTIFIED BY '${DB_PASSWORD}';
-GRANT ALL PRIVILEGES ON ${WORDPRESS_DB}.* TO '${WP_DB_USER}'@'%';
-FLUSH PRIVILEGES;
-EOF
-	unset DB_PASSWORD;
-	unset DB_ROOT_PASSWORD;
-	echo "END INIT"
-}
-	
-if [ ! -v DB_DATADIR ]; then
-	echo "Database directory not set"
-	exit 1
-fi
-
-mkdir -p "$DB_DATADIR"
-if [ ! -d "$DB_DATADIR/mysql" ]; then
-	init_database
-fi
-
-exec mariadbd --user=mysql --datadir="$DB_DATADIR"
+echo "before TIME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+sleep 2
+echo "AFTER TIME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+export DB_PASSWORD=$(cat /run/secrets/db_password)
+mariadb -e "DELETE FROM mysql.user WHERE User='';"
+mariadb -e "CREATE DATABASE IF NOT EXISTS ${WORDPRESS_DB};"
+mariadb -e "CREATE USER IF NOT EXISTS '${WP_DB_USER}'@'%' IDENTIFIED BY '${DB_PASSWORD}';"
+mariadb -e "GRANT ALL ON ${WORDPRESS_DB}.* TO '${WP_DB_USER}'@'%';"
+mariadb -e "FLUSH PRIVILEGES;"
+mysqladmin shutdown -u root
+mysqld --bind-address=0.0.0.0 --port=3306 --user=root

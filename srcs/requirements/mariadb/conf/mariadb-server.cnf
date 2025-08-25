@@ -7,7 +7,15 @@
 
 # this is only for the mysqld standalone daemon
 [mysqld]
-# skip-networking
+
+user = root
+skip-host-cache
+skip-name-resolve
+datadir = /var/lib/mysql
+basedir = /usr
+pid-file = /run/mysqld/mysqld.pid
+bind-address=0.0.0.0
+skip-networking=0
 
 # Galera-related settings
 [galera]
@@ -21,7 +29,6 @@
 #
 # Allow server to accept connections on all interfaces.
 #
-bind-address=0.0.0.0
 #
 # Optional setting
 #wsrep_slave_threads=1
@@ -34,6 +41,14 @@ bind-address=0.0.0.0
 # If you use the same .cnf file for MySQL and MariaDB,
 # you can put MariaDB-only options here
 [mariadb]
+user = root
+skip-host-cache
+skip-name-resolve
+datadir = /var/lib/mysql
+basedir = /usr
+pid-file = /run/mysqld/mysqld.pid
+bind-address=0.0.0.0
+skip-networking=0
 
 # This group is only read by MariaDB-10.5 servers.
 # If you use the same .cnf file for MariaDB of different versions,

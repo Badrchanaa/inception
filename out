@@ -1,0 +1,187 @@
+docker compose -f srcs/docker_compose.yml up -d
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.52kB done
+#1 DONE 0.0s
+
+#2 [wordpress internal] load build definition from Dockerfile
+#2 transferring dockerfile: 908B done
+#2 DONE 0.0s
+
+#3 [mariadb internal] load build definition from Dockerfile
+#3 transferring dockerfile: 385B done
+#3 DONE 0.0s
+
+#4 [nginx internal] load build definition from Dockerfile
+#4 transferring dockerfile: 439B done
+#4 DONE 0.0s
+
+#5 [nginx internal] load metadata for docker.io/library/alpine:3.21
+#5 DONE 0.2s
+
+#6 [nginx internal] load .dockerignore
+#6 transferring context: 2B done
+#6 DONE 0.0s
+
+#7 [mariadb internal] load .dockerignore
+#7 transferring context: 2B done
+#7 DONE 0.0s
+
+#8 [mariadb  1/12] FROM docker.io/library/alpine:3.21@sha256:b6a6be0ff92ab6db8acd94f5d1b7a6c2f0f5d10ce3c24af348d333ac6da80685
+#8 DONE 0.0s
+
+#9 [wordpress internal] load .dockerignore
+#9 transferring context: 2B done
+#9 DONE 0.0s
+
+#10 [nginx internal] load build context
+#10 transferring context: 120B done
+#10 DONE 0.0s
+
+#11 [mariadb internal] load build context
+#11 transferring context: 170B done
+#11 DONE 0.0s
+
+#12 [nginx  2/12] RUN apk update
+#12 CACHED
+
+#13 [nginx  3/12] RUN apk add --no-cache nginx openssl
+#13 CACHED
+
+#14 [nginx 11/12] RUN chmod +x setup.sh
+#14 CACHED
+
+#15 [nginx  8/12] RUN chown -R www:www /www
+#15 CACHED
+
+#16 [nginx  5/12] RUN mkdir -p /var/www/html/
+#16 CACHED
+
+#17 [nginx 10/12] COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+#17 CACHED
+
+#18 [nginx  9/12] COPY ./tools/setup.sh .
+#18 CACHED
+
+#19 [nginx  6/12] RUN mkdir /www
+#19 CACHED
+
+#20 [nginx  4/12] RUN addgroup -g 1001 www && adduser -D -s /sbin/nologin -H -u 1001 -G www www
+#20 CACHED
+
+#21 [nginx  7/12] RUN chown -R www:www /var/www/html/
+#21 CACHED
+
+#22 [nginx 12/12] RUN ./setup.sh
+#22 CACHED
+
+#23 [mariadb  7/10] RUN envsubst < ./init.sql.template > init.sql
+#23 CACHED
+
+#24 [mariadb  2/10] RUN apk update
+#24 CACHED
+
+#25 [mariadb  8/10] RUN chmod +x setup.sh
+#25 CACHED
+
+#26 [mariadb  6/10] COPY ./conf/init.sql.template .
+#26 CACHED
+
+#27 [mariadb  4/10] WORKDIR mariadb_setup
+#27 CACHED
+
+#28 [mariadb  9/10] COPY ./conf/mariadb-server.cnf .
+#28 CACHED
+
+#29 [mariadb  3/10] RUN apk add --no-cache mariadb mariadb-client gettext
+#29 CACHED
+
+#30 [mariadb  5/10] COPY ./tools/setup.sh .
+#30 CACHED
+
+#31 [mariadb 10/10] RUN mv mariadb-server.cnf /etc/my.cnf.d/
+#31 CACHED
+
+#32 [nginx] exporting to image
+#32 exporting layers done
+#32 writing image sha256:e8da3a286f9e7fc3bfa9dbfe540f4c8235cdc5cda68b30b9aba896e66b292b47 done
+#32 naming to docker.io/library/nginx done
+#32 DONE 0.0s
+
+#33 [mariadb] exporting to image
+#33 exporting layers done
+#33 writing image sha256:2f5b4412852f95c87cfaa842dc05a6f39511ef6941f515ae9bf154369c6df41b done
+#33 naming to docker.io/library/mariadb done
+#33 DONE 0.0s
+
+#34 [wordpress 10/18] ADD https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar ./wp-cli.phar
+#34 DONE 0.1s
+
+#35 [wordpress internal] load build context
+#35 transferring context: 152B done
+#35 DONE 0.0s
+
+#36 [wordpress  8/18] RUN ln -s /usr/bin/php84 /usr/bin/php
+#36 CACHED
+
+#37 [wordpress  9/18] WORKDIR wordpress
+#37 CACHED
+
+#38 [wordpress  4/18] RUN mkdir -p /var/www/html/
+#38 CACHED
+
+#39 [wordpress  7/18] RUN chown -R www:www /var/www/html/
+#39 CACHED
+
+#40 [wordpress 12/18] RUN mv wp-cli.phar /usr/local/bin/wp
+#40 CACHED
+
+#41 [wordpress  6/18] RUN chown -R www:www /usr/log/php84/
+#41 CACHED
+
+#42 [wordpress  3/18] RUN addgroup -g 1001 www && adduser -D -s /sbin/nologin -H -u 1001 -G www www
+#42 CACHED
+
+#43 [wordpress 16/18] RUN mv php.ini /etc/php84/
+#43 CACHED
+
+#44 [wordpress 14/18] COPY conf/www.conf .
+#44 CACHED
+
+#45 [wordpress 17/18] RUN mv  www.conf /etc/php84/php-fpm.d/
+#45 CACHED
+
+#46 [wordpress  5/18] RUN mkdir -p /usr/log/php84/
+#46 CACHED
+
+#47 [wordpress 13/18] COPY ./tools/setup.sh .
+#47 CACHED
+
+#48 [wordpress 10/18] ADD https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar ./wp-cli.phar
+#48 CACHED
+
+#49 [wordpress 15/18] COPY conf/php.ini .
+#49 CACHED
+
+#50 [wordpress 11/18] RUN chmod +x wp-cli.phar
+#50 CACHED
+
+#51 [wordpress  2/18] RUN apk add --no-cache     php84-cli     php84-fpm     php84-mysqli     php84-pdo_mysql     php84-gd     php84-curl     php84-mbstring     php84-json     php84-xml     php84-openssl     php84-phar     curl     vim     tar
+#51 CACHED
+
+#52 [wordpress 18/18] RUN chmod +x setup.sh
+#52 CACHED
+
+#53 [wordpress] exporting to image
+#53 exporting layers done
+#53 writing image sha256:2a41c79652706a6a282f7d79989993b7745ed57e96fb69be58ddb9e3a869205d done
+#53 naming to docker.io/library/wordpress done
+#53 DONE 0.0s
+
+#54 [nginx] resolving provenance for metadata file
+#54 DONE 0.0s
+
+#55 [mariadb] resolving provenance for metadata file
+#55 DONE 0.0s
+
+#56 [wordpress] resolving provenance for metadata file
+#56 DONE 0.0s
