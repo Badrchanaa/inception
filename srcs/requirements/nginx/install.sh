@@ -1,8 +1,5 @@
 #!/bin/sh
 
-mkdir /usr/share/nginx/html
-cat << EOF > /usr/share/nginx/html/index.html
-<h1>Nginx is working</h1>
-<p>default nginx page</p>
-EOF
-chmod -R 755 /usr/share/nginx
+mkdir -p /etc/nginx/ssl/
+openssl req -x509 -newkey rsa:4096 -days 365 \
+  -noenc -keyout "/etc/nginx/ssl/bchanaa.42.fr.key" -out "/etc/nginx/ssl/bchanaa.42.fr.crt" -subj "/CN=$HOSTNAME"
