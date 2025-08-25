@@ -10,8 +10,8 @@ RUN mkdir /www
 RUN chown -R www:www ${WP_DATA}
 RUN chown -R www:www /www
 
-COPY install.sh .
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY ./tools/install.sh .
+COPY ./config/nginx.conf /etc/nginx/nginx.conf
 RUN chmod +x install.sh
 RUN ./install.sh
 
