@@ -25,11 +25,12 @@ CREATE USER '${WP_DB_USER}'@'%' IDENTIFIED BY '${DB_PASSWORD}';
 GRANT ALL PRIVILEGES ON ${WORDPRESS_DB}.* TO '${WP_DB_USER}'@'%';
 FLUSH PRIVILEGES;
 EOF
-
+	unset DB_PASSWORD;
+	unset DB_ROOT_PASSWORD;
 	echo "END INIT"
 }
 	
-if [[ ! -v DB_DATADIR ]]; then
+if [ ! -v DB_DATADIR ]; then
 	echo "Database directory not set"
 	exit 1
 fi

@@ -15,7 +15,7 @@ services:
     networks:
       - wp_app
     healthcheck:
-        test: ["CMD", "mariadb-admin", "ping", "-uroot", "--password=$(cat /run/secrets/db_root_password)"]
+        test: ["CMD-SHELL", "mariadb-admin ping -uroot --password=$(cat /run/secrets/db_root_password)"]
         interval: 4s
         retries: 5
         start_period: 30s
