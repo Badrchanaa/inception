@@ -1,15 +1,17 @@
 COMPOSE_FILE=srcs/docker_compose.yml
 ENV_FILE=srcs/.env
+SECRETS  = ./secrets/wp_admin_password.txt ./secrets/wp_user_password.txt ./secrets/db_password.txt ./secrets/db_root_password.txt
 
-NAME=WORDPRESS_APP
+%.txt:
+	openssl rand -base64 33 > $@
 
 SHELL := /bin/bash
 
 .ONESHELL:
 
-all: $(NAME)
+all: up
 
-$(NAME): $(COMPOSE_FILE) $(ENV_FILE)
+up: $(SECRETS) $(COMPOSE_FILE) $(ENV_FILE)
 	docker compose -f $(COMPOSE_FILE) up -d
 
 down:
@@ -32,4 +34,4 @@ fclean: down
 	fi
 	# - docker system prune -a --volumes -f
 
-.PHONY: fclean re down
+.PHONY: fclean re down up
