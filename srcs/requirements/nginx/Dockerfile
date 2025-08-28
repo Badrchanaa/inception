@@ -3,7 +3,7 @@ FROM alpine:3.21
 ARG WP_DATA
 RUN apk update
 RUN apk add --no-cache nginx openssl
-RUN addgroup -g 1001 www && adduser -D -s /sbin/nologin -H -u 1001 -G www www
+RUN addgroup -g 1000 www && adduser -D -s /sbin/nologin -H -u 1000 -G www www
 RUN mkdir -p ${WP_DATA}
 RUN mkdir /www
 RUN chown -R www:www ${WP_DATA}

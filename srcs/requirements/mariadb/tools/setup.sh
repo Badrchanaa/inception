@@ -7,12 +7,12 @@ if [ ! -d "/run/mysqld" ]; then
 	chown -R mysql:mysql /run/mysqld
 fi
 
-DB_PASSWORD=$(cat /run/secrets/db_password)
-DB_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
 
 init_database()
 {
 	rm -rf $DB_DATADIR/*
+	DB_PASSWORD=$(cat /run/secrets/db_password)
+	DB_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
 	echo "initializing db, datadir=" $DB_DATADIR
 	chown -R mysql:mysql "$DB_DATADIR"
 	mariadb-install-db --user=mysql --datadir="$DB_DATADIR"
@@ -31,7 +31,7 @@ EOF
 	echo "END INIT"
 }
 	
-if [ ! -v DB_DATADIR ]; then
+if [ -z "${DB_DATADIR}" ]; then
 	echo "Database directory not set"
 	exit 1
 fi

@@ -16,7 +16,7 @@ RUN apk add --no-cache \
     vim \
     tar
 
-RUN addgroup -g 1001 www && adduser -D -s /sbin/nologin -H -u 1001 -G www www
+RUN addgroup -g 1000 www && adduser -D -s /sbin/nologin -H -u 1000 -G www www
 RUN mkdir -p /var/www/html/
 RUN mkdir -p /usr/log/php84/
 RUN chown -R www:www /usr/log/php84/
