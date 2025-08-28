@@ -2,12 +2,15 @@ COMPOSE_FILE=srcs/docker_compose.yml
 ENV_FILE=srcs/.env
 SECRETS  = ./secrets/wp_admin_password.txt ./secrets/wp_user_password.txt ./secrets/db_password.txt ./secrets/db_root_password.txt
 
-%.txt:
-	openssl rand -base64 33 > $@
-
 SHELL := /bin/bash
 
 .ONESHELL:
+
+secrets:
+	mkdir -p secrets
+
+%.txt: secrets
+	openssl rand -base64 33 > $@
 
 all: up
 
